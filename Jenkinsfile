@@ -6,25 +6,35 @@ pipeline {
                 bat 'mvn clean package -DskipTests=true'
             }
         }
-         stage ('Unit Test') {
+        stage ('Unit Test') {
             steps {
                 bat 'mvn test'
             }
         }
 
-          stage ('Deploy Backend') {
+        stage ('Deploy Backend') {
             steps {
                 sleep(20)
                 deploy adapters: [tomcat8(credentialsId: 'tomcatLogin', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks-backend', war: 'target/tasks-backend.war'
             }
         }
 
-             stage ('API Test') {
+        stage ('API Test') {
             steps {
                 dir('api-test'){
-                git credentialsId: 'githublogin', url: 'https://github.com/kcabarite/tasks-api-test'
-                sleep(20)
-                bat 'mvn test'
+                    git credentialsId: 'githublogin', url: 'https://github.com/kcabarite/tasks-api-test'
+                    sleep(20)
+                    bat 'mvn test'
+                }
+            }
+        }
+
+        stage ('Deploy Frontend') {
+            steps {
+                dir('frontend'){
+                    git credentialsId: 'githublogin', url: 'https://github.com/kcabarite/tasks-frontend'
+                    bat 'mvn clean package'
+                    deploy adapters: [tomcat8(credentialsId: 'tomcatLogin', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
             }
         }
