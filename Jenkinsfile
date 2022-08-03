@@ -25,6 +25,7 @@ pipeline {
                 git credentialsId: 'githublogin', url: 'https://github.com/kcabarite/tasks-api-test'
                 sleep(20)
                 bat 'mvn test'
+                }
             }
         }
     }
