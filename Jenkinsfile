@@ -38,6 +38,15 @@ pipeline {
                 }
             }
         }
+
+        stage ('Funtional Test') {
+            steps {
+                dir('funtional-test'){
+                    git credentialsId: 'githublogin', url: 'https://github.com/kcabarite/-kcabarite-tasks-funcional-test'
+                    bat 'mvn test'
+                }
+            }
+        }
     }
 }
 
